@@ -1,55 +1,31 @@
-function etch(){};
+var Etch = {};
 
-etch.prototype.load = function(){
-	var match = document.location.hash.match(/#present:hideControls:(.+)/);
-	
-	if(match){
-		this.loadUrl(match[1]);
-	}
-	else{
-		//this will almost certainly never be shown because if the url is invalid
-		//Etch.restrict should have already come into play
-		IDE.showMessage("Error. Invalid project url.");
-	}
-}
+var IDE, world;
 
-etch.prototype.loadUrl = function(url){
-	//load a Snap! xml file from the given url
-	//return: true for success false for error
-	var request = new XMLHttpRequest();
-	
-	request.addEventListener("load", function(event){
-		//we successfuly loaded the xml	
-		if(request.status == 200){ //this was a success
-			IDE.rawOpenProjectString(request.responseText); //load the data we just got as a project
-		}
-		else{
-			IDE.showMessage("Error retrieving project. Please report this.\
-				\n(Code LoadUrl:Response Code:"+request.status+")");
-		}
-		
-	}, false);
-	request.addEventListener("error", function(event){
-		//there was an error
-		IDE.showMessage("Error retrieving project. Please report this.\
-			\n(Code LoadUrl:Error Listener)");
-		
-	}, false);
-	
-	request.open("GET", url);
-	
-	request.send()
-}
+Etch.initWorld = function(){
+	var world;
 
-etch.prototype.restrict = function(){
-	//show error messages if the user would end up with a view that would allow editing the project
-	//or something else like that the we don't want. 
-	//(This is a reccomendation and will always be overridable by the user)
-	
-	if(document.location.hash.search(/\#present\:hideControls\:(.+)/)!==0){
-		// if they are not set up to see a file in present view
-		document.body.innerHTML="<h1>Error. Please enter a valid url.</h1>";
+	world = new WorldMorph(document.getElementById('world'));
+	world.worldCanvas.focus();
+
+	//the below lines were modified by Daniel. It used to be that it would just
+	//Be new IDE_Morph.openIn(world), but this way we can capture the IDE_Morph 
+	//and use it to load project strings
+	IDE = new IDE_Morph()
+	IDE.openIn(world);
+
+	Etch.load(); //load the etch project
+
+	//end modified lines
+	setInterval(loop, 1);
+
+	function loop() {
+		world.doOneCycle();
 	}
 }
 
-var Etch = new etch();
+Etch.load = function(string){
+	Etch.initWorld();
+	
+	IDE.rawOpenProjectString(string);
+}
