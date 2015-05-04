@@ -9,8 +9,9 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
-- url: .*
-  script: main.app
+- url: /play/(.*)
+  static_files: play/\1
+  upload: play\/\1
 
 libraries:
 - name: webapp2

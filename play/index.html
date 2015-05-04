@@ -25,6 +25,10 @@
 			//My script that integrates this with Etch Code
 		</script> 
 		
+	</head>
+	<body style="margin: 0;" onload="Etch.restrict()">
+		<canvas id="world" tabindex="1" style="position: absolute;" />
+		
 		<script type="text/javascript">
 			var world;
 			window.onload = function () {
@@ -46,8 +50,5 @@
 				world.doOneCycle();
 			}
 		</script>
-	</head>
-	<body style="margin: 0;" onload="Etch.restrict()">
-		<canvas id="world" tabindex="1" style="position: absolute;" />
 	</body>
 </html>
