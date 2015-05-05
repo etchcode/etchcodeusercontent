@@ -13,8 +13,8 @@ handlers:
   static_files: play/index.html
   upload: play\/index\.html
   http_headers:
-    Access-Control-Allow-Origin: *
-	
+    Access-Control-Allow-Origin: '*'
+
 - url: /play/(.+)
   static_files: play/\1
   upload: play\/\1
