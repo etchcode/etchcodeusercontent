@@ -2,12 +2,8 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>Snap! Build Your Own Blocks</title>
+		<title>Etch Code Viewer</title> <!-- line modified by Daniel for Etch-->
 		<link rel="shortcut icon" href="favicon.ico">
-		
-		<script type="text/javascript">
-			//document.location.hash="#present:hideControls";
-		</script>
 		
 		<script type="text/javascript" src="morphic.js"></script>
 		<script type="text/javascript" src="widgets.js"></script>
@@ -24,33 +20,62 @@
 		<script type="text/javascript" src="cloud.js"></script>
 		<script type="text/javascript" src="sha512.js"></script>
 		
-		<!--initialization code moved to etch.js-->
+		<script type="text/javascript" src="etch.js"></script> 
 		
-		<script type="text/javascript" src="etch.js">
+		<script type="text/javascript">
 			//My script that integrates this with Etch Code
-				var world;
-				window.onload = function () {
+			var world;
+			var IDE;
+			
+			Etch.load = function(project){
+				if(!Etch.loaded){
 					world = new WorldMorph(document.getElementById('world'));
 					world.worldCanvas.focus();
 
-					//the below lines were modified by Daniel. It used to be that it would just
+					//the below lines were modified by Daniel as a part of the Etch integration.
+					//It used to be that it would just
 					//Be new IDE_Morph.openIn(world), but this way we can capture the IDE_Morph 
 					//and use it to load project strings
-					IDE = new IDE_Morph()
-					IDE.openIn(world);
+					IDE = new IDE_Morph();
 
-					Etch.load(); //load the etch project
+					IDE.openIn(world, project);
 
-					//end modified lines
+					function loop() {
+						world.doOneCycle();
+					}
+					
 					setInterval(loop, 1);
-				};
-				function loop() {
-					world.doOneCycle();
+
 				}
-		</script> 
+				else{
+					IDE.rawOpenProjectString(project);
+				}
+			}		
+		</script>
 		
 	</head>
-	<body style="margin: 0;">
+	
+	<body style="margin: 0;" onload="Etch.init()"> 
+		
+		<div id="etchMessages" style="padding: 10px; text-align:center;"> <!--this block added by Daniel as a part of the Etch integration-->
+			
+			<style type="text/css"> /*this block added by Daniel as a part of the Etch integration*/
+				/*Etch Styles*/
+
+				.message .error{
+					color: red;
+				}
+				.message .neutral{
+					color: yellow;
+				}
+				.message .success{
+					color: green;
+				}
+			</style>
+			
+			<div id="etchLoading" class="message neutral" style="">Fetching project...</div>
+			<dv id="etchLoadError" class="message error" style="display:none">Project failed to load</dv>
+		</div>
 		<canvas id="world" tabindex="1" style="position: absolute;" />
 	</body>
 </html>

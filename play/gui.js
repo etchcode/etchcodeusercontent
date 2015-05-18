@@ -248,6 +248,7 @@ IDE_Morph.prototype.init = function (isAutoFill) {
 };
 
 IDE_Morph.prototype.openIn = function (world) {
+	// this whole function has been replaced with code in etch.js
     var hash, usr, myself = this, urlLanguage = null;
 
     // get persistent user data, if any
@@ -359,10 +360,6 @@ IDE_Morph.prototype.openIn = function (world) {
             this.parent.add(this.shield);
             myself.showMessage('Fetching project\nfrom the cloud...');
 
-			//The project will not be loaded through Etch.load from the script tag on index.html
-			
-/*This is disabled because we want to load projects through the etch cloud
-
 			// make sure to lowercase the username
             dict = SnapCloud.parseDict(location.hash.substr(9));
             dict.Username = dict.Username.toLowerCase();
@@ -410,7 +407,7 @@ IDE_Morph.prototype.openIn = function (world) {
                 },
                 this.cloudError()
             );
-*/
+
         } else if (location.hash.substr(0, 7) === '#cloud:') {
             this.shield = new Morph();
             this.shield.alpha = 0;
@@ -536,7 +533,7 @@ IDE_Morph.prototype.createControlBar = function () {
         pauseButton,
         startButton,
         projectButton,
-        settingsButton,
+        settingsmsButton,
         stageSizeButton,
         appModeButton,
         cloudButton,

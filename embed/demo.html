@@ -1,0 +1,37 @@
+<html>
+	<head>
+		<title>Demo embedded Snap! file using Etch embedder</title>
+	</head>
+	<body>
+		<h1>Demo embedded Snap! file using Etch embedder</h1>
+		<iframe src="https://etchcodeusercontent.appspot.com/play/" width="500px" height="400px"></iframe>
+		<script>
+			var iframe = document.getElementsByTagName("iframe")[0];
+						
+			iframe.addEventListener("load", function(){
+				var req = new XMLHttpRequest();
+				req.addEventListener("load", function(){
+					iframe.contentWindow.postMessage({action:"loadString", string:req.response}, "https://etchcodeusercontent.appspot.com");
+					
+					console.log(req.response);
+				});
+						
+				req.open("GET", "https://snap.berkeley.edu/snapsource/demo/fractal_fruit_tree.xml");
+
+				req.send();
+			}, false);
+		</script>
+		<p>
+			Create an iframe to https://etchcodeusercontent.appspot.com/play/?file=&lt;url to your file&gt;.
+			<br><br>
+			Or, create an iframe to https://etchcodeusercontent.appspot.com/play/ and send it a message with the Snap! XML to play like this:
+			<br><br>
+			<pre>
+	var iframe = document.getElementById("id-of-embedded-iframe");
+	iframe.addEventListener("load", function(){
+		iframe.contentWindow.postMessage({action:"loadString", string:"&lt;your Snap! XML&gt;"}, "https://etchcodeusercontent.appspot.com");
+	});
+			</pre>
+		</p>
+	</body>
+</html>
