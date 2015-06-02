@@ -377,7 +377,6 @@ Etch.processQueryStrings = function(){
 }
 
 Etch.init = function(){
-	console.log("Etch.init");
 	Etch.extendBrowser(); //usefull stuff like HTMLElement.show()
 		
 	var params = Etch.processQueryStrings();
@@ -402,11 +401,10 @@ Etch.init = function(){
 	addEventListener("message", function(message){
 		if(message.data.action === "loadString"){
 			document.getElementById("etchLoading").show();
-			console.log("data:text/xml,"+message.data.string);
 			Etch.load(message.data.string);
 		}
 		else{
-			console.log("Posted message not an option");
+			throw new Error("Posted message (" + message.data + ") is not an option");
 		}
 	}, false);
 
