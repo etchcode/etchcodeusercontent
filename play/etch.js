@@ -2,15 +2,15 @@ var Etch = {};
 
 IDE_Morph.prototype.openIn = function(world, project){
 	"use strict";
-	
+
 	//replace the default openIn
-	
+
     var hash, usr, myself = this, urlLanguage = null;
 
     this.buildPanes();
     world.add(this);
     world.userMenu = this.userMenu;
-	
+
     // prevent non-DialogBoxMorphs from being dropped
     // onto the World in user-mode
     world.reactToDropOf = function (morph) {
@@ -29,11 +29,11 @@ IDE_Morph.prototype.openIn = function(world, project){
 	this.shield.color = this.color;
 	this.shield.setExtent(this.parent.extent());
 	this.parent.add(this.shield);
-	
+
 	var msg = myself.showMessage('Loading project...');
-			
+
 	myself.rawOpenProjectString(project);
-	
+
 	myself.hasChangedMedia = true;
 
 	myself.shield.destroy();
@@ -45,11 +45,11 @@ IDE_Morph.prototype.openIn = function(world, project){
 	//myself.controlBar.hide();
 
 	document.getElementById("etchLoading").hide();
-}
+};
 
 IDE_Morph.prototype.createControlBar = function () {
     // assumes the logo has already been created
-    var padding = 5,
+    var padding = 0,
         button,
         stopButton,
         pauseButton,
@@ -77,7 +77,7 @@ IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.mouseClickLeft = function () {
         this.world().fillPage();
     };
-    this.add(this.controlBar);
+//    this.add(this.controlBar); // don't add the controlbar to the page so none of that stuff will be on the page
 
     // stopButton
     button = new PushButtonMorph(
@@ -283,6 +283,8 @@ IDE_Morph.prototype.createControlBar = function () {
         this.label.setCenter(this.center());
         this.label.setLeft(this.settingsButton.right() + padding);
     };
+
+    this.controlBar.destroy(); // we don't actually want this header
 };
 
 IDE_Morph.prototype.toggleAppMode = function (appMode) {
@@ -307,7 +309,7 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
     if (this.isAppMode) {
         this.setColor(this.appModeColor);
         this.controlBar.setColor(this.color);
-        
+
         elements.forEach(function (e) {
             e.hide();
         });
@@ -346,6 +348,33 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
         }
     }
     this.setExtent(this.world().extent()); // resume trackChanges
+};
+
+IDE_Morph.prototype.newProject = function () {
+    // in this case we are overriding in order to set the size to the size of the container
+    this.source = SnapCloud.username ? 'cloud' : 'local';
+    if (this.stage) {
+        this.stage.destroy();
+    }
+    if (location.hash.substr(0, 6) !== '#lang:') {
+        location.hash = '';
+    }
+    this.globalVariables = new VariableFrame();
+    this.currentSprite = new SpriteMorph(this.globalVariables);
+    this.sprites = new List([this.currentSprite]);
+    StageMorph.prototype.dimensions = new Point(480, 360);
+    StageMorph.prototype.hiddenPrimitives = {};
+    StageMorph.prototype.codeMappings = {};
+    StageMorph.prototype.codeHeaders = {};
+    StageMorph.prototype.enableCodeMapping = false;
+    SpriteMorph.prototype.useFlatLineEnds = false;
+    this.setProjectName('');
+    this.projectNotes = '';
+    this.createStage();
+    this.add(this.stage);
+    this.createCorral();
+    this.selectSprite(this.stage.children[0]);
+    this.fixLayout();
 };
 
 Etch.extendBrowser = function(){
@@ -403,6 +432,15 @@ Etch.init = function(){
 			document.getElementById("etchLoading").show();
 			Etch.load(message.data.string);
 		}
+        else if(message.data.action === "stop"){
+            if(IDE) { // if the IDE has been loaded yet
+                IDE.stopAllScripts();
+                console.log("stopping project")
+            }
+            else{
+                throw new Error("You cannot stop a project that isn't started")
+            }
+        }
 		else{
 			throw new Error("Posted message (" + message.data + ") is not an option");
 		}

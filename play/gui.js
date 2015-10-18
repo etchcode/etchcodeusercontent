@@ -1541,7 +1541,8 @@ IDE_Morph.prototype.setExtent = function (point) {
     // determine the minimum dimensions making sense for the current mode
     if (this.isAppMode) {
         minExt = StageMorph.prototype.dimensions.add(
-            this.controlBar.height() + 10
+            0
+//            this.controlBar.height() + 10
         );
     } else {
     /* // auto-switches to small stage mode, commented out b/c I don't like it
@@ -1553,6 +1554,7 @@ IDE_Morph.prototype.setExtent = function (point) {
         minExt = this.isSmallStage ?
                 padding.add(StageMorph.prototype.dimensions.divideBy(2))
                       : padding.add(StageMorph.prototype.dimensions);
+        
 /*
         minExt = this.isSmallStage ?
                 new Point(700, 350) : new Point(910, 490);
