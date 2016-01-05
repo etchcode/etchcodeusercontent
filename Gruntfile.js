@@ -1,9 +1,8 @@
 module.exports = function(grunt) {
-    grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-contrib-watch");
-    
+    require("load-grunt-tasks")(grunt);
+
     var ETCH_FILES = ["play/etch.js"];
-    
+
     grunt.initConfig({
         jshint: {
             etch: ETCH_FILES
@@ -14,9 +13,14 @@ module.exports = function(grunt) {
                 tasks: ["jshint:etch"],
                 options: {spawn: false}
             }
-        } 
+        },
+        gae: {
+            deploy: {
+                action: "update",
+            }
+        }
     });
+    grunt.registerTask("deploy", ["gae:deploy"]);
 
     grunt.registerTask('default', ["jshint"]);
-
 };
