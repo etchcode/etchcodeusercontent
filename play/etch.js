@@ -1,16 +1,18 @@
 var Etch = {};
 
+// linting Snap! code is pointless
+// jshint ignore:start
 IDE_Morph.prototype.openIn = function(world, project){
 	"use strict";
-	
+
 	//replace the default openIn
-	
+
     var hash, usr, myself = this, urlLanguage = null;
 
     this.buildPanes();
     world.add(this);
     world.userMenu = this.userMenu;
-	
+
     // prevent non-DialogBoxMorphs from being dropped
     // onto the World in user-mode
     world.reactToDropOf = function (morph) {
@@ -29,11 +31,11 @@ IDE_Morph.prototype.openIn = function(world, project){
 	this.shield.color = this.color;
 	this.shield.setExtent(this.parent.extent());
 	this.parent.add(this.shield);
-	
+
 	var msg = myself.showMessage('Loading project...');
-			
+
 	myself.rawOpenProjectString(project);
-	
+
 	myself.hasChangedMedia = true;
 
 	myself.shield.destroy();
@@ -42,9 +44,8 @@ IDE_Morph.prototype.openIn = function(world, project){
 
 	myself.toggleAppMode(true); //hide the editor
 
-	//myself.controlBar.hide();
+	myself.controlBar.hide(); // hide to control bar at the top with play/pause/stop buttons
 
-	document.getElementById("etchLoading").hide();
 }
 
 IDE_Morph.prototype.createControlBar = function () {
@@ -307,7 +308,7 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
     if (this.isAppMode) {
         this.setColor(this.appModeColor);
         this.controlBar.setColor(this.color);
-        
+
         elements.forEach(function (e) {
             e.hide();
         });
@@ -347,65 +348,85 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
     }
     this.setExtent(this.world().extent()); // resume trackChanges
 };
-
-Etch.extendBrowser = function(){
-	HTMLElement.prototype.show = function(){
-		this.style.display = "block";
-	}
-	HTMLElement.prototype.hide = function(){
-		this.style.display = "none";
-	}
-}
+// jshint ignore:end
 
 Etch.processQueryStrings = function(){
 	var qString = document.location.search;
 	var parameters = {};
-	
+
 	if(qString[0] === "?"){
 		qString = qString.substr(1, qString.length);
-		
+
 		var parametersArray = qString.split("&");
-		
+
 		for(var i = 0; i < parametersArray.length; i++){
 			var param = parametersArray[i].split("=");
-			
+
 			parameters[param[0]] = param[1];
 		}
 	}
-	
+
 	return parameters;
-}
+};
+
+Etch.load = function(project){
+    if(!Etch.loaded){
+        world = new WorldMorph(document.getElementById('world'));
+        world.worldCanvas.focus();
+
+        //the below lines were modified by Daniel as a part of the Etch integration.
+        //It used to be that it would just
+        //Be new IDE_Morph.openIn(world), but this way we can capture the IDE_Morph
+        //and use it to load project strings
+        IDE = new IDE_Morph();
+
+        IDE.openIn(world, project);
+
+        function loop() { // jshint ignore:line
+            world.doOneCycle();
+        }
+
+        setInterval(loop, 1);
+
+    }
+    else{
+        IDE.rawOpenProjectString(project);
+    }
+
+    IDE.runScripts();
+};
+
+Etch.get_thumbnail = function(){
+
+};
 
 Etch.init = function(){
-	Etch.extendBrowser(); //usefull stuff like HTMLElement.show()
-		
 	var params = Etch.processQueryStrings();
-	
+
 	if(params.file !== undefined){
-		document.getElementById("etchLoading").show();
-		
 		var req = new XMLHttpRequest();
-		
+
 		req.addEventListener("load", function(event){
 			Etch.load(req.responseText);
 		});
-		req.addEventListener("error", function(event){
-			document.getElementById("etchLoadError").show();
-		});
-		
+
 		req.open("GET", params.file);
 		req.send();
 	}
-	
+
 	//listen for being sent a file
 	addEventListener("message", function(message){
 		if(message.data.action === "loadString"){
-			document.getElementById("etchLoading").show();
 			Etch.load(message.data.string);
 		}
+        else if(message.data.action === "stop"){
+            IDE.stopAllScripts();
+        }
 		else{
 			throw new Error("Posted message (" + message.data + ") is not an option");
 		}
 	}, false);
 
 };
+
+Etch.init(); // run init code

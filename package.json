@@ -1,0 +1,27 @@
+{
+  "name": "etchcodeusercontent",
+  "version": "1.0.0",
+  "description": "etchcodeusercontent",
+  "main": "app.yaml",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/etchcode/etchcodeusercontent.git"
+  },
+  "keywords": [
+    "etchcode"
+  ],
+  "author": "Daniel Franklin",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/etchcode/etchcodeusercontent/issues"
+  },
+  "homepage": "https://github.com/etchcode/etchcodeusercontent#readme",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.11.3",
+    "grunt-contrib-watch": "^0.6.1"
+  }
+}

@@ -20,42 +20,9 @@
 		<script type="text/javascript" src="cloud.js"></script>
 		<script type="text/javascript" src="sha512.js"></script>
 		
-		<script type="text/javascript" src="etch.js"></script> 
-		
-		<script type="text/javascript">
-			//My script that integrates this with Etch Code
-			var world;
-			var IDE;
-			
-			Etch.load = function(project){
-				if(!Etch.loaded){
-					world = new WorldMorph(document.getElementById('world'));
-					world.worldCanvas.focus();
-
-					//the below lines were modified by Daniel as a part of the Etch integration.
-					//It used to be that it would just
-					//Be new IDE_Morph.openIn(world), but this way we can capture the IDE_Morph 
-					//and use it to load project strings
-					IDE = new IDE_Morph();
-
-					IDE.openIn(world, project);
-
-					function loop() {
-						world.doOneCycle();
-					}
-					
-					setInterval(loop, 1);
-
-				}
-				else{
-					IDE.rawOpenProjectString(project);
-				}
-			}		
-		</script>
-		
 	</head>
 	
-	<body style="margin: 0;" onload="Etch.init()"> 
+	<body style="margin: 0;"> 
 		
 		<div id="etchMessages" style="padding: 10px; text-align:center;"> <!--this block added by Daniel as a part of the Etch integration-->
 			
@@ -72,10 +39,10 @@
 					color: green;
 				}
 			</style>
-			
-			<div id="etchLoading" class="message neutral" style="">Fetching project...</div>
-			<dv id="etchLoadError" class="message error" style="display:none">Project failed to load</dv>
+
 		</div>
 		<canvas id="world" tabindex="1" style="position: absolute;" />
+        
+        <script type="text/javascript" src="etch.js"></script>
 	</body>
 </html>
