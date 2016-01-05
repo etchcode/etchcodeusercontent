@@ -528,7 +528,7 @@
     whose "isTemplate" flag is false, in other words: a non-template.
 
     When creating a copy from a template, the copy's
-    
+
         reactToTemplateCopy
 
     is invoked, if it is present.
@@ -10382,22 +10382,24 @@ WorldMorph.prototype.initEventListeners = function () {
         false
     );
 
-    canvas.addEventListener( // Safari, Chrome
-        "mousewheel",
-        function (event) {
-            myself.hand.processMouseScroll(event);
-            event.preventDefault();
-        },
-        false
-    );
-    canvas.addEventListener( // Firefox
-        "DOMMouseScroll",
-        function (event) {
-            myself.hand.processMouseScroll(event);
-            event.preventDefault();
-        },
-        false
-    );
+    // Daniel: Commented out because this interferes with the rest of the page
+    // Etch will not support mouse scroll events
+    // canvas.addEventListener( // Safari, Chrome
+    //     "mousewheel",
+    //     function (event) {
+    //         myself.hand.processMouseScroll(event);
+    //         event.preventDefault();
+    //     },
+    //     false
+    // );
+    // canvas.addEventListener( // Firefox
+    //     "DOMMouseScroll",
+    //     function (event) {
+    //         myself.hand.processMouseScroll(event);
+    //         event.preventDefault();
+    //     },
+    //     false
+    // );
 
     document.body.addEventListener(
         "paste",
@@ -10436,7 +10438,7 @@ WorldMorph.prototype.initEventListeners = function () {
         false
     );
 
-/* Disable the Snap! are you sure that you want to leave, because the user should never be editing    
+/* Disable the Snap! are you sure that you want to leave, because the user should never be editing
 	window.onbeforeunload = function (evt) {
         var e = evt || window.event,
             msg = "Are you sure you want to leave?";
